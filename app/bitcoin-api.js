@@ -5,7 +5,7 @@ const bodyParser = require("body-parser")
 
 var client = new bitcoin.Client({
   host: "localhost",
-  port: 18332,
+  port: 18443,
   user: "bitcoinrpc",
   pass: "459d13ac17bea9f3965165f38d7449bd"
 })
@@ -21,18 +21,27 @@ app.all("*", function(req, res, next) {
   next()
 })
 
-var checkUTXO = (fromAdd, amount, fee, res) => {}
-
 /* Blockchain */
 app.get("/blockchain/info", (req, res) => {
-  client.getBlockchainInfo(function(err, info) {
+  client.cmd("getblockchaininfo", function(err, info) {
     if (err) {
+      console.log(err)
       res.status(500)
       res.json({ result: false, message: err })
     } else {
       res.json({ result: true, data: { info: info } })
     }
   })
+
+  // client.getBlockchainInfo(function(err, info) {
+  //   if (err) {
+  //     console.log(err)
+  //     res.status(500)
+  //     res.json({ result: false, message: err })
+  //   } else {
+  //     res.json({ result: true, data: { info: info } })
+  //   }
+  // })
 })
 
 app.get("/blockchain/mempool/info", (req, res) => {
@@ -114,7 +123,14 @@ app.post("/rawtx/create", (req, res) => {
         if (sendBalance >= req.body.amount + req.body.fee) break
       }
 
+      totalBalance *= 1
+      req.body.amount *= 1
+      req.body.fee *= 1
+
       if (totalBalance < req.body.amount + req.body.fee) {
+        console.log("totalBalance: " + totalBalance)
+        console.log("req.body.amount: " + req.body.amount)
+        console.log("req.body.fee: " + req.body.fee)
         res.json({ result: false, error: "insufficient amount" })
         return console.log("[ERROR] Insufficient amount(Total balance is lower than amount+fee)")
       }
@@ -138,7 +154,12 @@ app.post("/rawtx/create", (req, res) => {
   })
 })
 
-app.post("/rawtx/sign", (req, res) => {})
+app.post("/rawtx/sign", (req, res) => {
+  client.cmd("signrawtransactionwithkey", req.body.hex, [req.body.privkey], function(err, info) {
+    if (err) console.log(err)
+    else res.send(info)
+  })
+})
 
 app.listen(3000, () => {
   console.log("Example app listening on port 3000!")

@@ -1,5 +1,5 @@
 {
-  "name": "bitcoin",
+  "name": "bitcoin-test",
   "description": "Communicate with bitcoind via JSON-RPC",
   "version": "3.0.1",
   "main": "lib/index.js",
@@ -11,7 +11,10 @@
   "contributors": [
     "Sean Lavine <sean@eternalrise.com>"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "bitcoin": "^3.0.1",
+    "express": "^4.16.4"
+  },
   "devDependencies": {
     "clone": "^1.0.2",
     "mocha": "^2.3.3",
