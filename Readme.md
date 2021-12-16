@@ -37,7 +37,8 @@ var client = new bitcoin.Client({
   port: 8332,
   user: "username",
   pass: "password",
-  timeout: 30000
+  timeout: 30000,
+  wallet: "/wallet/wallet.dat"
 })
 ```
 
@@ -97,6 +98,7 @@ var client = new bitcoin.Client({
   pass: "password",
   ssl: true,
   sslStrict: true,
-  sslCa: fs.readFileSync(__dirname + "/myca.cert")
+  sslCa: fs.readFileSync(__dirname + "/myca.cert"),
+  wallet: "/wallet/wallet.dat"
 })
 ```
